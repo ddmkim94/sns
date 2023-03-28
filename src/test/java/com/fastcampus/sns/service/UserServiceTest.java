@@ -2,9 +2,8 @@ package com.fastcampus.sns.service;
 
 import com.fastcampus.sns.exception.SnsApplicationException;
 import com.fastcampus.sns.fixture.UserEntityFixture;
-import com.fastcampus.sns.model.UserEntity;
+import com.fastcampus.sns.model.entity.UserEntity;
 import com.fastcampus.sns.repository.UserEntityRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
