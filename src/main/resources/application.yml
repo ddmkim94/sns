@@ -1,0 +1,18 @@
+spring:
+  jpa:
+    database: postgresql
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: create
+    properties:
+      hibernate:
+        format_sql: true # sql 포맷팅
+    show-sql: true
+
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: dongmin
+    password:
+    driver-class-name: org.postgresql.Driver
