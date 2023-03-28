@@ -1,13 +1,12 @@
 package com.fastcampus.sns.service;
 
+import com.fastcampus.sns.exception.ErrorCode;
 import com.fastcampus.sns.exception.SnsApplicationException;
 import com.fastcampus.sns.model.User;
-import com.fastcampus.sns.model.UserEntity;
+import com.fastcampus.sns.model.entity.UserEntity;
 import com.fastcampus.sns.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,11 +16,13 @@ public class UserService {
 
     public User join(String userName, String password) {
         // userName 으로 가입된 회원이 있는지 체크
-        Optional<UserEntity> userEntity = userEntityRepository.findByUserName(userName);
+        userEntityRepository.findByUserName(userName).ifPresent(it -> {
+            throw new SnsApplicationException(ErrorCode.DUPLICATED_USER_NAME, String.format("%s is duplicated!", userName));
+        });
 
         // 회원가입 진행 = user 를 db 에 저장
-        userEntityRepository.save(new UserEntity());
-        return new User();
+        UserEntity userEntity = userEntityRepository.save(UserEntity.of(userName, password));
+        return User.fromEntity(userEntity);
     }
 
     // TODO : jwt 토큰 반환하도록 구현 예정
