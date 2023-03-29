@@ -1,0 +1,24 @@
+spring:
+  jpa:
+    database: postgresql
+    hibernate:
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true # sql 포맷팅
+    show-sql: true
+
+  datasource:
+    hikari:
+      maximum-pool-size: 4
+    url: jdbc:postgresql://localhost:5432/postgres
+    username: dongmin
+    password:
+    driver-class-name: org.postgresql.Driver
+
+
+jwt:
+  secret-key: fast_campus.sns-application-2022.secret_key
+  token:
+    expired-time-ms: 2592000000 # 30 days
