@@ -12,6 +12,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "가입 내역이 없습니다!"),
     INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "패스워드가 일치하지 않습니다!"),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "토큰이 유효하지 않습니다!"),
+    POST_NOT_FOUND (HttpStatus.NOT_FOUND, "포스트를 찾을 수 없습니다!"),
+    INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "권한이 없습니다!"),
+
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR"),
     ;
 
