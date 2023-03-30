@@ -103,7 +103,6 @@ public class PostServiceTest {
 
         // mocking
         PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
-        UserEntity userEntity = postEntity.getUser();
         UserEntity writer = UserEntityFixture.get("eunbin", "1234", 2);
 
         when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(writer));
@@ -112,6 +111,56 @@ public class PostServiceTest {
         SnsApplicationException e = assertThrows(SnsApplicationException.class, () -> postService.modify(title, body, userName, postId));
         assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
     }
+
+    @Test
+    void 포스트삭제가_성공한경우() {
+        String userName = "userName";
+        Integer postId = 1;
+
+        // mocking
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
+        UserEntity userEntity = postEntity.getUser();
+
+        when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(userEntity));
+        when(postEntityRepository.findById(postId)).thenReturn(Optional.of(postEntity));
+
+        assertDoesNotThrow(() -> postService.delete(postId, userName));
+    }
+
+    @Test
+    void 포스트삭제시_포스트가_존재하지_않는_경우() {
+        String userName = "userName";
+        Integer postId = 1;
+
+        // mocking
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
+        UserEntity userEntity = postEntity.getUser();
+
+        when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(userEntity));
+        when(postEntityRepository.findById(postId)).thenReturn(Optional.empty());
+
+        SnsApplicationException e = assertThrows(SnsApplicationException.class, () -> postService.delete(postId, userName));
+        assertEquals(ErrorCode.POST_NOT_FOUND, e.getErrorCode());
+
+    }
+
+    @Test
+    void 포스트삭제시_권한이_없는_경우() {
+        String userName = "userName";
+        Integer postId = 1;
+
+        // mocking
+        PostEntity postEntity = PostEntityFixture.get(userName, postId, 1);
+        UserEntity writer = UserEntityFixture.get("eunbin", "1234", 2);
+
+        when(userEntityRepository.findByUserName(userName)).thenReturn(Optional.of(writer));
+        when(postEntityRepository.findById(postId)).thenReturn(Optional.of(postEntity));
+
+        SnsApplicationException e = assertThrows(SnsApplicationException.class, () -> postService.delete(postId, userName));
+        assertEquals(ErrorCode.INVALID_PERMISSION, e.getErrorCode());
+    }
+
+
 
 
 }
