@@ -2,6 +2,7 @@ package com.fastcampus.sns.service;
 
 import com.fastcampus.sns.exception.ErrorCode;
 import com.fastcampus.sns.exception.SnsApplicationException;
+import com.fastcampus.sns.model.Post;
 import com.fastcampus.sns.model.entity.PostEntity;
 import com.fastcampus.sns.model.entity.UserEntity;
 import com.fastcampus.sns.repository.PostEntityRepository;
@@ -26,12 +27,26 @@ public class PostService {
     }
 
     @Transactional
-    public void modify(String title, String body, String userName, Integer postId) {
+    public Post modify(String title, String body, String userName, Integer postId) {
         UserEntity userEntity = userEntityRepository.findByUserName(userName)
                 .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded!", userName)));
 
         // post exist
+        PostEntity postEntity = postEntityRepository.findById(postId)
+                .orElseThrow(() -> new SnsApplicationException(ErrorCode.POST_NOT_FOUND, String.format("%s번 post not founded!", postId)));
 
         // post permission
+        if (postEntity.getUser() != userEntity) {
+            throw new SnsApplicationException(
+                    ErrorCode.INVALID_PERMISSION,
+                    String.format("[%s는 %s번 포스트에 대한 수정 권한이 없습니다!!]", userName, postId)
+            );
+        }
+
+        // TODO : setter 로 바로
+        postEntity.setTitle(title);
+        postEntity.setBody(body);
+
+        return Post.fromEntity(postEntity);
     }
 }
