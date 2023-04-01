@@ -15,7 +15,7 @@ import java.time.Instant;
 @Getter
 @Setter
 @SQLDelete(sql = "UPDATE \"post\" SET deleted_at = NOW() WHERE id = ?")
-@Where(clause = "deleted_at is NULL")
+@Where(clause = "deleted_at is NULL") // 삭제된 post 는 조회 X
 @NoArgsConstructor
 public class PostEntity {
 
