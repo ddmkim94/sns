@@ -15,8 +15,9 @@ public enum ErrorCode {
     POST_NOT_FOUND (HttpStatus.NOT_FOUND, "포스트를 찾을 수 없습니다!"),
     INVALID_PERMISSION(HttpStatus.UNAUTHORIZED, "권한이 없습니다!"),
     ALREADY_LIKED(HttpStatus.CONFLICT, "이미 좋아요를 누른 포스트입니다!"),
-
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_SERVER_ERROR"),
+    ALARM_CONNECT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "connecting alarm occurs error!"),
+
     ;
 
     private final HttpStatus status;
