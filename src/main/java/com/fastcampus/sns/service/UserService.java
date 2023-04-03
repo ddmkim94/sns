@@ -6,6 +6,7 @@ import com.fastcampus.sns.model.Alarm;
 import com.fastcampus.sns.model.User;
 import com.fastcampus.sns.model.entity.UserEntity;
 import com.fastcampus.sns.repository.AlarmEntityRepository;
+import com.fastcampus.sns.repository.UserCacheRepository;
 import com.fastcampus.sns.repository.UserEntityRepository;
 import com.fastcampus.sns.util.JwtTokenUtils;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ public class UserService {
     private final UserEntityRepository userEntityRepository;
     private final AlarmEntityRepository alarmEntityRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserCacheRepository userCacheRepository;
 
     @Value("${jwt.secret-key}")
     private String secretKey;
@@ -31,9 +33,10 @@ public class UserService {
     private long expiredTimeMs;
 
     public User loadUserByUsername(String userName) {
-        return userEntityRepository.findByUserName(userName)
-                .map(User::fromEntity)
-                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded!", userName)));
+        return userCacheRepository.getUser(userName).orElseGet(() ->
+                userEntityRepository.findByUserName(userName)
+                        .map(User::fromEntity)
+                        .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded!", userName))));
     }
 
     @Transactional
@@ -48,21 +51,17 @@ public class UserService {
         return User.fromEntity(userEntity);
     }
 
-    // TODO : jwt 토큰 반환하도록 구현 예정
     public String login(String userName, String password) {
         // 회원가입 여부 체크
-        UserEntity userEntity = userEntityRepository.findByUserName(userName)
-                .orElseThrow(() -> new SnsApplicationException(ErrorCode.USER_NOT_FOUND, String.format("%s not founded!", userName)));
+        User user = loadUserByUsername(userName);
+        userCacheRepository.setUser(user);
 
         // 비밀번호 체크
-        if (!passwordEncoder.matches(password, userEntity.getPassword())) {
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new SnsApplicationException(ErrorCode.INVALID_PASSWORD);
         }
 
-        // 토큰 생성
-        String token = JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
-
-        return token;
+        return JwtTokenUtils.generateToken(userName, secretKey, expiredTimeMs);
     }
 
     public Page<Alarm> alarmList(Integer userId, Pageable pageable) {
