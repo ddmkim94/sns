@@ -17,6 +17,9 @@ spring:
     password:
     driver-class-name: org.postgresql.Driver
 
+  redis:
+    url: redis://localhost:6379
+
 
 jwt:
   secret-key: fast_campus.sns-application-2022.secret_key
