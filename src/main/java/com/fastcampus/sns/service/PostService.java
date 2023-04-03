@@ -3,7 +3,6 @@ package com.fastcampus.sns.service;
 import com.fastcampus.sns.exception.ErrorCode;
 import com.fastcampus.sns.exception.SnsApplicationException;
 import com.fastcampus.sns.model.AlarmArgs;
-import com.fastcampus.sns.model.AlarmType;
 import com.fastcampus.sns.model.Comment;
 import com.fastcampus.sns.model.Post;
 import com.fastcampus.sns.model.entity.*;
@@ -13,8 +12,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 import static com.fastcampus.sns.model.AlarmType.NEW_COMMENT_ON_POST;
 import static com.fastcampus.sns.model.AlarmType.NEW_LIKE_ON_POST;
@@ -66,6 +63,8 @@ public class PostService {
             );
         }
 
+        likeEntityRepository.deleteAllByPost(postEntity);
+        commentEntityRepository.deleteAllByPost(postEntity);
         postEntityRepository.deleteById(postId);
     }
 
@@ -97,7 +96,7 @@ public class PostService {
 
     }
 
-    public int likeCount(Integer postId) {
+    public long likeCount(Integer postId) {
         PostEntity postEntity = getPostEntityOrException(postId);
 
         return likeEntityRepository.countByPost(postEntity);

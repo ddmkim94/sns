@@ -6,7 +6,6 @@ import com.fastcampus.sns.controller.request.PostModifyRequest;
 import com.fastcampus.sns.controller.response.CommentResponse;
 import com.fastcampus.sns.controller.response.PostResponse;
 import com.fastcampus.sns.controller.response.Response;
-import com.fastcampus.sns.model.Comment;
 import com.fastcampus.sns.model.Post;
 import com.fastcampus.sns.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +57,7 @@ public class PostController {
     }
 
     @GetMapping("/{postId}/likes")
-    public Response<Integer> likeCount(@PathVariable("postId") Integer postId) {
+    public Response<Long> likeCount(@PathVariable("postId") Integer postId) {
         return Response.success(postService.likeCount(postId));
     }
 
